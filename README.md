@@ -60,6 +60,15 @@ chmod +x setup.sh stop_snapshot.sh delete_snapshot.sh
 
 > ⚠️ Expect **5–15 minutes** on the first build. The container is **automatically started** when the build finishes.
 
+> **Note:** The progress bar may appear frozen during the model download — this is normal. The display does not accurately reflect what is being downloaded.
+>
+> ```
+> #11 22.14 [1/2] Downloading model from HuggingFace...
+> Fetching 20 files:   5%|▌         | 1/20 [00:00<00:05,  3.53it/s]
+> ```
+>
+> **Be patient!** The build is still running. It will resume output once the large model files finish downloading.
+
 ### 3. Open the UI and start generating!
 
 Open your browser and navigate to:
