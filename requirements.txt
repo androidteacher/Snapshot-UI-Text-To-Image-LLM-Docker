@@ -1,0 +1,8 @@
+optimum-intel
+openvino
+diffusers
+onnx
+fastapi
+uvicorn[standard]
+python-multipart
+Pillow

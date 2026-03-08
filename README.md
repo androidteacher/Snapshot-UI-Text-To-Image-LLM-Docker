@@ -1,20 +1,76 @@
-# Snapshot-UI — Text-to-Image Generator
+# Snapshot-UI-LLM-Chat
 
-A self-contained Docker application that runs the **SDXS-512-0.9 OpenVINO** text-to-image model with a sleek dark-themed Chat UI.
+![Snapshot-UI Application](screenshot/application.png)
 
-> **Model:** [rupeshs/sdxs-512-0.9-openvino](https://huggingface.co/rupeshs/sdxs-512-0.9-openvino)
-> **Inference:** Single-step generation on CPU via Intel OpenVINO
-> **Resolution:** 512×512
-
-![Snapshot-UI Screenshot](https://img.shields.io/badge/theme-dark%20%2B%20cyan-00e5ff?style=for-the-badge)
+A self-contained Docker application that runs a **text-to-image AI model** with a sleek, dark-themed web UI. Type a prompt — get an image back instantly in your browser. No cloud, no API keys — everything runs locally on your machine.
 
 ---
 
-## Prerequisites
+## System Requirements
 
-- **Docker** installed and running — [Get Docker](https://docs.docker.com/get-docker/)
-- ~2 GB of disk space (for model + dependencies)
-- Internet connection (for initial build only)
+> **Minimum: 8 GB RAM | Recommended: 16 GB RAM or more**
+
+This app runs an AI image generation model **entirely on your CPU** inside Docker. Because the model is loaded fully into memory, your machine needs enough RAM to hold it alongside the operating system and Docker overhead.
+
+- With **8 GB**, generation will work, but your system may feel sluggish during use and build times will be longer.
+- With **16 GB or more**, the model loads comfortably, generation is smoother, and the rest of your system stays responsive.
+- A **virtual machine** is fine — just make sure to allocate at least **8 GB of RAM** to the VM in your hypervisor settings (VirtualBox, VMware, etc.).
+
+---
+
+## Installing Docker (Ubuntu / Kali)
+
+If you don't already have Docker installed, run the following:
+
+```bash
+# Update packages and install prerequisites
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg
+
+# Add Docker's official GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add Docker repository
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine and Docker Compose
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Allow your user to run Docker without sudo (log out and back in after this)
+sudo usermod -aG docker $USER
+```
+
+> **Kali users:** Replace `ubuntu` with `debian` in the repository URL, or simply use `sudo apt install docker.io docker-compose` for a quick install.
+
+Verify the install:
+
+```bash
+docker --version
+docker compose version
+```
+
+---
+
+## The AI Model: What Is It and Where Does It Come From?
+
+This app uses **SDXS-512-0.9**, an ultra-fast single-step text-to-image diffusion model.
+
+- **Original model:** [IDKiro/sdxs-512-0.9](https://huggingface.co/IDKiro/sdxs-512-0.9) on Hugging Face
+- **Runtime-optimized version:** [rupeshs/sdxs-512-0.9-openvino](https://huggingface.co/rupeshs/sdxs-512-0.9-openvino) — converted to Intel **OpenVINO** format for efficient CPU inference
+
+When you run `./setup.sh` to build the Docker image, the model (~500 MB) is **automatically downloaded from Hugging Face** during the build process and baked directly into the Docker image. This means:
+
+- No internet connection is needed after the build
+- The container starts quickly (model is already on disk)
+- Generation runs fully **offline** at runtime
 
 ---
 
@@ -27,36 +83,36 @@ git clone https://github.com/YOUR_USERNAME/Snapshot-UI-LLM-Chat.git
 cd Snapshot-UI-LLM-Chat
 ```
 
-### 2. Build the Docker image
+### 2. Build the image
 
 ```bash
 chmod +x setup.sh
 ./setup.sh
 ```
 
-> ⚠️ The build downloads the AI model (~500MB+) and Python packages.
-> This takes **5–15 minutes** depending on your connection.
+> ⚠️ This downloads ~1–2 GB of data (Python packages + the AI model). Expect **5–15 minutes** on the first build. Subsequent builds use Docker's cache and are much faster.
 
-### 3. Run the container
+### 3. Start the container
 
 ```bash
 docker run -d -p 9999:9999 --name snapshot-ui snapshot-ui
 ```
 
-### 4. Open the UI
+### 4. Open the UI and start generating!
 
-Navigate to **[http://localhost:9999](http://localhost:9999)** in your browser.
+Open your browser and navigate to:
 
-Wait for the status indicator to show **"Model Ready"** (takes ~10–20 seconds on first start), then type a prompt like `A cute cat` and hit Generate!
+```
+http://localhost:9999
+```
 
----
+Wait a few seconds for the status indicator to show **"Model Ready"**, then type any prompt and hit **Enter** (or click →).
 
-## Usage
-
-1. Type a description in the prompt field (e.g., *"A sunset over mountains"*)
-2. Press **Enter** or click the **→** button
-3. Wait for the image to generate
-4. Click **Download PNG** to save the image
+**Example prompts to try:**
+- `A cute cat sitting on a windowsill`
+- `A sunset over misty mountains`
+- `A cyberpunk city at night with neon lights`
+- `A watercolor painting of a lighthouse`
 
 ---
 
@@ -72,22 +128,8 @@ Wait for the status indicator to show **"Model Ready"** (takes ~10–20 seconds 
 
 ---
 
-## Architecture
-
-```
-Single Docker Container (port 9999)
-├── FastAPI Backend
-│   ├── GET  /         → Chat UI
-│   ├── POST /generate → Image generation
-│   └── GET  /health   → Health check
-├── OpenVINO Runtime (CPU)
-└── SDXS-512-0.9 Model (pre-baked)
-```
-
----
-
 ## Credits
 
-- **Model:** [SDXS-512-0.9](https://huggingface.co/IDKiro/sdxs-512-0.9) by IDKiro, OpenVINO conversion by [rupeshs](https://huggingface.co/rupeshs)
+- **Model:** [SDXS-512-0.9](https://huggingface.co/IDKiro/sdxs-512-0.9) by IDKiro, OpenVINO conversion by [rupeshs](https://huggingface.co/rupeshs/sdxs-512-0.9-openvino)
 - **Runtime:** [Intel OpenVINO](https://docs.openvino.ai/) + [Optimum Intel](https://huggingface.co/docs/optimum/intel/index)
-# Snapshot-UI-Text-To-Image-LLM-Docker
+- **Backend:** [FastAPI](https://fastapi.tiangolo.com/) + [Uvicorn](https://www.uvicorn.org/)

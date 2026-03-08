@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Snapshot-UI: Text-to-Image Generator powered by SDXS-512 OpenVINO">
+    <title>Snapshot-UI — Text-to-Image</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Snapshot-UI</h1>
+                    <p class="subtitle">SDXS-512 · OpenVINO · Text-to-Image</p>
+                </div>
+            </div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Result Area -->
+            <div class="result-area" id="resultArea">
+                <div class="placeholder" id="placeholder">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1">
+                            <rect x="6" y="6" width="36" height="36" rx="4"/>
+                            <circle cx="17" cy="17" r="3"/>
+                            <path d="M6 30l10-10 8 8 4-4 14 14"/>
+                        </svg>
+                    </div>
+                    <p class="placeholder-text">Describe an image to generate</p>
+                    <p class="placeholder-hint">Try: "A cute cat" · "A sunset over mountains" · "A cyberpunk city at night"</p>
+                </div>
+
+                <!-- Generated Image -->
+                <div class="image-container" id="imageContainer" style="display: none;">
+                    <img id="generatedImage" alt="Generated image">
+                    <div class="image-meta" id="imageMeta"></div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState" style="display: none;">
+                    <div class="pulse-ring">
+                        <div class="pulse-core"></div>
+                    </div>
+                    <p class="loading-text">Generating image<span class="loading-dots"></span></p>
+                    <p class="loading-hint" id="loadingPrompt"></p>
+                </div>
+
+                <!-- Error State -->
+                <div class="error-state" id="errorState" style="display: none;">
+                    <div class="error-icon">⚠</div>
+                    <p class="error-text" id="errorText"></p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <form id="promptForm" class="prompt-form">
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="promptInput"
+                            class="prompt-input"
+                            placeholder="Describe an image..."
+                            autocomplete="off"
+                            maxlength="500"
+                            required
+                        >
+                        <button type="submit" class="generate-btn" id="generateBtn" title="Generate Image">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 5l7 7-7 7M5 12h14"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                <div class="input-actions">
+                    <button class="download-btn" id="downloadBtn" style="display: none;" title="Download Image">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        <span>Download PNG</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span>Powered by <a href="https://huggingface.co/rupeshs/sdxs-512-0.9-openvino" target="_blank" rel="noopener">SDXS-512-0.9-OpenVINO</a></span>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
