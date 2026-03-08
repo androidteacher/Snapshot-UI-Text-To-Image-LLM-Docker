@@ -2,7 +2,7 @@
 
 ![Snapshot-UI Application](screenshot/application.png)
 
-A self-contained Docker application that runs a **text-to-image AI model** with a sleek, dark-themed web UI. Type a prompt — get an image back instantly in your browser. No cloud, no API keys — everything runs locally on your machine.
+A self-contained Docker application that runs the [SDXS-512-0.9-OpenVINO](https://huggingface.co/rupeshs/sdxs-512-0.9-openvino) text-to-image model.
 
 ---
 
@@ -10,63 +10,31 @@ A self-contained Docker application that runs a **text-to-image AI model** with 
 
 > **Minimum: 8 GB RAM | Recommended: 16 GB RAM or more**
 
-This app runs an AI image generation model **entirely on your CPU** inside Docker. Because the model is loaded fully into memory, your machine needs enough RAM to hold it alongside the operating system and Docker overhead.
-
-- With **8 GB**, generation will work, but your system may feel sluggish during use and build times will be longer.
-- With **16 GB or more**, the model loads comfortably, generation is smoother, and the rest of your system stays responsive.
-- A **virtual machine** is fine — just make sure to allocate at least **8 GB of RAM** to the VM in your hypervisor settings (VirtualBox, VMware, etc.).
+The model loads entirely into memory on your CPU. With 8 GB your system may feel sluggish; with 16 GB or more everything runs smoothly. If you're using a virtual machine, make sure to allocate at least 8 GB of RAM in your hypervisor settings.
 
 ---
 
 ## Installing Docker (Ubuntu / Kali)
 
-If you don't already have Docker installed, run the following:
+If Docker is not already installed:
 
 ```bash
-# Update packages and install prerequisites
-sudo apt-get update
-sudo apt-get install -y ca-certificates curl gnupg
-
-# Add Docker's official GPG key
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-# Add Docker repository
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-# Install Docker Engine and Docker Compose
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# Allow your user to run Docker without sudo (log out and back in after this)
+sudo apt update
+sudo apt install -y docker.io docker-compose
 sudo usermod -aG docker $USER
 ```
 
-> **Kali users:** Replace `ubuntu` with `debian` in the repository URL, or simply use `sudo apt install docker.io docker-compose` for a quick install.
-
-Verify the install:
+Log out and back in for the group change to take effect, then verify:
 
 ```bash
 docker --version
-docker compose version
 ```
 
 ---
 
-## The AI Model: What Is It and Where Does It Come From?
+## How Much Data Will This Download?
 
-This app uses **SDXS-512-0.9**, an ultra-fast single-step text-to-image diffusion model.
-
-- **Original model:** [IDKiro/sdxs-512-0.9](https://huggingface.co/IDKiro/sdxs-512-0.9) on Hugging Face
-- **Runtime-optimized version:** [rupeshs/sdxs-512-0.9-openvino](https://huggingface.co/rupeshs/sdxs-512-0.9-openvino) — converted to Intel **OpenVINO** format for efficient CPU inference
-
-When you run `./setup.sh`, the model (~500 MB) is **automatically downloaded from Hugging Face** during the Docker build and baked directly into the image. This means:
+When you run `./setup.sh`, the model (~500 MB) is automatically downloaded from Hugging Face during the Docker build and baked directly into the image. This means:
 
 - No internet connection is needed after the build
 - The container starts quickly (model is already on disk)
@@ -90,7 +58,7 @@ chmod +x setup.sh stop_snapshot.sh delete_snapshot.sh
 ./setup.sh
 ```
 
-> ⚠️ This downloads ~1–2 GB of data (Python packages + the AI model). Expect **5–15 minutes** on the first build. The container is **automatically started** when the build finishes.
+> ⚠️ Expect **5–15 minutes** on the first build. The container is **automatically started** when the build finishes.
 
 ### 3. Open the UI and start generating!
 
