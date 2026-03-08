@@ -60,7 +60,7 @@ chmod +x setup.sh stop_snapshot.sh delete_snapshot.sh
 
 > ⚠️ Expect **5–15 minutes** on the first build. The container is **automatically started** when the build finishes.
 
-> **Note:** The progress bar may appear frozen during the model download — this is normal. The display does not accurately reflect what is being downloaded.
+> **Note:** The progress bar may appear frozen during the model download — this is normal. The display <span style="color:cyan">**MAY NOT**</span> accurately reflect what is being downloaded.
 >
 > ```
 > #11 22.14 [1/2] Downloading model from HuggingFace...
