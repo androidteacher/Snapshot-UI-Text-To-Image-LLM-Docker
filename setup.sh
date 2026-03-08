@@ -70,20 +70,35 @@ echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━�
 echo -e "${GREEN}${BOLD}  ✓  Build complete!${RESET}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
-echo -e "  ${BOLD}To start the container:${RESET}"
+
+# ── Stop and remove any existing container ────────────────────────────
+if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    echo -e "${YELLOW}  Removing existing container '${CONTAINER_NAME}'...${RESET}"
+    docker rm -f "$CONTAINER_NAME" > /dev/null 2>&1
+fi
+
+# ── Run the container ─────────────────────────────────────────────────
+echo -e "${BOLD}  Starting container '${CONTAINER_NAME}' on port ${PORT}...${RESET}"
+docker run -d \
+    -p "${PORT}:${PORT}" \
+    --name "$CONTAINER_NAME" \
+    --restart unless-stopped \
+    "$IMAGE_NAME"
+
 echo ""
-echo -e "  ${CYAN}docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} ${IMAGE_NAME}${RESET}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo -e "${GREEN}${BOLD}  ✓  Container is running!${RESET}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
-echo -e "  ${BOLD}Then open in your browser:${RESET}"
+echo -e "  ${BOLD}Open in your browser:${RESET}"
 echo ""
 echo -e "  ${CYAN}http://localhost:${PORT}${RESET}"
 echo ""
 echo -e "  ${DIM}(The model takes ~10-20 seconds to load on first startup.)${RESET}"
 echo -e "  ${DIM}The status indicator in the UI will turn cyan when ready.${RESET}"
 echo ""
-echo -e "  ${BOLD}Other commands:${RESET}"
-echo -e "  ${DIM}Stop:    ${RESET}docker stop ${CONTAINER_NAME}"
-echo -e "  ${DIM}Start:   ${RESET}docker start ${CONTAINER_NAME}"
+echo -e "  ${BOLD}Lifecycle scripts:${RESET}"
+echo -e "  ${DIM}Stop:    ${RESET}./stop_snapshot.sh"
+echo -e "  ${DIM}Delete:  ${RESET}./delete_snapshot.sh"
 echo -e "  ${DIM}Logs:    ${RESET}docker logs -f ${CONTAINER_NAME}"
-echo -e "  ${DIM}Remove:  ${RESET}docker rm -f ${CONTAINER_NAME}"
 echo ""

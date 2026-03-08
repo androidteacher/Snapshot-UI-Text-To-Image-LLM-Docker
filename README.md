@@ -66,7 +66,7 @@ This app uses **SDXS-512-0.9**, an ultra-fast single-step text-to-image diffusio
 - **Original model:** [IDKiro/sdxs-512-0.9](https://huggingface.co/IDKiro/sdxs-512-0.9) on Hugging Face
 - **Runtime-optimized version:** [rupeshs/sdxs-512-0.9-openvino](https://huggingface.co/rupeshs/sdxs-512-0.9-openvino) — converted to Intel **OpenVINO** format for efficient CPU inference
 
-When you run `./setup.sh` to build the Docker image, the model (~500 MB) is **automatically downloaded from Hugging Face** during the build process and baked directly into the Docker image. This means:
+When you run `./setup.sh`, the model (~500 MB) is **automatically downloaded from Hugging Face** during the Docker build and baked directly into the image. This means:
 
 - No internet connection is needed after the build
 - The container starts quickly (model is already on disk)
@@ -83,22 +83,16 @@ git clone https://github.com/YOUR_USERNAME/Snapshot-UI-LLM-Chat.git
 cd Snapshot-UI-LLM-Chat
 ```
 
-### 2. Build the image
+### 2. Build and run
 
 ```bash
-chmod +x setup.sh
+chmod +x setup.sh stop_snapshot.sh delete_snapshot.sh
 ./setup.sh
 ```
 
-> ⚠️ This downloads ~1–2 GB of data (Python packages + the AI model). Expect **5–15 minutes** on the first build. Subsequent builds use Docker's cache and are much faster.
+> ⚠️ This downloads ~1–2 GB of data (Python packages + the AI model). Expect **5–15 minutes** on the first build. The container is **automatically started** when the build finishes.
 
-### 3. Start the container
-
-```bash
-docker run -d -p 9999:9999 --name snapshot-ui snapshot-ui
-```
-
-### 4. Open the UI and start generating!
+### 3. Open the UI and start generating!
 
 Open your browser and navigate to:
 
@@ -116,15 +110,18 @@ Wait a few seconds for the status indicator to show **"Model Ready"**, then type
 
 ---
 
-## Container Management
+## Managing the Container
 
-| Action  | Command                         |
-| ------- | ------------------------------- |
-| Start   | `docker start snapshot-ui`      |
-| Stop    | `docker stop snapshot-ui`       |
-| Logs    | `docker logs -f snapshot-ui`    |
-| Remove  | `docker rm -f snapshot-ui`      |
-| Rebuild | `./setup.sh`                    |
+| Action                    | Command                  |
+| ------------------------- | ------------------------ |
+| **Stop** the container    | `./stop_snapshot.sh`     |
+| **Restart** the container | `docker start snapshot-ui` |
+| **Rebuild** from scratch  | `./setup.sh`             |
+| **Delete everything**     | `./delete_snapshot.sh`   |
+| View logs                 | `docker logs -f snapshot-ui` |
+
+- **`stop_snapshot.sh`** — Gracefully stops the running container. You can restart it later with `docker start snapshot-ui`.
+- **`delete_snapshot.sh`** — Completely removes the container, Docker image, dangling volumes, and build cache. You will need to run `./setup.sh` again to reinstall.
 
 ---
 
