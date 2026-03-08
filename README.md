@@ -47,8 +47,8 @@ When you run `./setup.sh`, the model (~500 MB) is automatically downloaded from 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Snapshot-UI-LLM-Chat.git
-cd Snapshot-UI-LLM-Chat
+git clone https://github.com/androidteacher/Snapshot-UI-Text-To-Image-LLM-Docker.git
+cd Snapshot-UI-Text-To-Image-LLM-Docker
 ```
 
 ### 2. Build and run
