@@ -60,7 +60,7 @@ echo ""
 
 # Build with plain progress so user sees pip install progress bars
 # and model download output in real time
-DOCKER_BUILDKIT=0 docker build \
+DOCKER_BUILDKIT=1 docker build \
     --progress=plain \
     -t "$IMAGE_NAME" \
     .
