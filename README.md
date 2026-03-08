@@ -10,7 +10,7 @@ A self-contained Docker application that runs the [SDXS-512-0.9-OpenVINO](https:
 
 > **Minimum: 8 GB RAM | Recommended: 16 GB RAM or more**
 
-The model loads entirely into memory on your CPU. With 8 GB your system may feel sluggish; with 16 GB or more everything runs smoothly. If you're using a virtual machine, make sure to allocate at least 8 GB of RAM in your hypervisor settings.
+The model loads entirely into memory on your CPU. With 8 GB your system may feel sluggish; with 16 GB or more everything runs smoothly. If you're using a virtual machine, make sure to allocate at least 8 GB of RAM.
 
 ---
 
